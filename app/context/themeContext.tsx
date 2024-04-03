@@ -1,32 +1,37 @@
 "use client"
 
 import { useState, createContext, useContext, Dispatch, SetStateAction, useEffect } from "react"
-import useThemeCookies from "../hooks/useThemeCookies"
-type theme = "light" | "dark"
-type themeContext = {
-    theme: theme,
-    setTheme: (arg: theme) => void 
+type Theme = "light" | "dark"
+type ThemeContextType = {
+    theme: Theme,
+    setTheme: (arg: Theme) => void 
 }
 
-const ThemeContext = createContext<themeContext>({
+const ThemeContext = createContext<ThemeContextType>({
     theme: "light",
     setTheme: () => null
 })
 
+function isTheme(variable: any): variable is Theme {
+    return variable === "light" || variable === "dark";
+}
+
 export default function ThemeProvider({children}: Readonly<{children: React.ReactNode}>) {
-    const [cookies, setCookies] = useThemeCookies()
+
+    const [theme, setTheme] = useState<Theme>("light")
     useEffect(() => {
-        setCookies("theme", cookies.theme ? cookies.theme as theme : "light")
+        if(isTheme(window.localStorage.getItem("theme"))) {
+            setTheme(window.localStorage.getItem("theme") as "light" | "dark")
+        }
     }, [])
+    function useChangeTheme  (newTheme: Theme)  {
+        setTheme(newTheme)
+        window.localStorage.setItem("theme", newTheme)
 
-    const [theme, themeSetter] = useState<theme>(cookies.theme ? cookies.theme as theme : "light")
-
-    function setTheme (arg: theme) {
-        themeSetter(arg)
-        setCookies("theme", arg)
     }
+
     return (
-        <ThemeContext.Provider value={{theme, setTheme}}>{children}</ThemeContext.Provider>
+        <ThemeContext.Provider value={{theme, setTheme: useChangeTheme}}>{children}</ThemeContext.Provider>
     )
 }
 
