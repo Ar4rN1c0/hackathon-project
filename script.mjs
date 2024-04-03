@@ -30,3 +30,5 @@ async function registerUser () {
     .then(json => console.log(json))
     .catch(err => console.error('error:' + err));
 }
+
+getUsers()

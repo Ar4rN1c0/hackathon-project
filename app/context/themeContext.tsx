@@ -36,7 +36,6 @@ export default function ThemeProvider({children}: Readonly<{children: React.Reac
 }
 
 
-
 export const useTheme = () => {
     const {theme} = useContext(ThemeContext)
     const isDarkTheme = theme === "dark" 

@@ -21,9 +21,8 @@ export default function RegisterPage() {
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault()
         const body = JSON.stringify(data)
-        const res = await fetch("https://club.jactc.xyz/api/v1/auth/register", {
+        const res = await await fetch("https://club.jactc.xyz/api/v1/auth/register", {
             mode: "cors",
-            credentials: 'include',
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -31,8 +30,8 @@ export default function RegisterPage() {
             },
             body: body
         }).then(res => res.json) as {message: string, success: boolean}
-        const status = res.success === true
-        console.log(status)
+        console.log(res)
+        console.log("I keep working")
 
     }
     return (
