@@ -2,6 +2,7 @@ import { useSession } from "@/app/context/sessionContext"
 import { useTheme } from "@/app/context/themeContext"
 import AccountIcon from "@/app/icons/AccountIcon"
 import Link from "next/link"
+import { useEffect, useState } from "react"
 
 export default function ProfileMenu() {
     const { background, color, border } = useTheme()
@@ -10,9 +11,9 @@ export default function ProfileMenu() {
         return (
             <nav className={background + border + color + " absolute z-40 border-2 rounded-md right-10 top-[70px] p-4"}>
                 <section className="flex gap-2">
-                    <AccountIcon size={100}></AccountIcon>
+                    <AccountIcon isButton={false} size={100}></AccountIcon>
                     <article className="p-4">
-                        <h3 className="text-xl">{session.userId}</h3>
+                        <h3 className="text-xl">{session.name}</h3>
                         <h4>ProfileSurname</h4>
                     </article>
                 </section>

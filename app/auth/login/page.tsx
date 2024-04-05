@@ -1,19 +1,22 @@
 "use client"
 
 import { useTheme } from "@/app/context/themeContext"
-import { ChangeEvent, FormEvent, useState } from "react"
+import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import { useSession } from "@/app/context/sessionContext"
+import { useRouter } from "next/navigation"
+import getName from "@/app/hooks/useGetInfo"
 
 type dataForm = {
     email: string,
     password: string
 } | {}
 
-export default function LoginPage () {
-    const {background, border, color} = useTheme()
+export default function LoginPage() {
+    const { background, border, color, secondaryColor } = useTheme()
     const [data, setData] = useState<dataForm>({})
-    const {session, setSession} = useSession()
-    
+    const { session, setSession } = useSession()
+    const router = useRouter()
+
     function handleChange(e: ChangeEvent<HTMLInputElement>) {
         setData((prevData: dataForm) => ({
             ...prevData,
@@ -21,7 +24,7 @@ export default function LoginPage () {
         }))
     }
 
-    async function handleSubmit (e: FormEvent) {
+    async function handleSubmit(e: FormEvent) {
         e.preventDefault()
         const body = JSON.stringify(data)
         const res = await fetch("https://club.jactc.xyz/api/v1/auth/login", {
@@ -32,18 +35,28 @@ export default function LoginPage () {
                 "Access-Control-Allow-Origin": "https://club.jactc.xyz/"
             },
             body: body
-        }).then(res => res.json()).catch(err => console.log(err))
-        console.log(res)
-        setSession({authToken: res?.accessToken, userId: res?.userId})
+        }).then(res => res.json()).then(res => {
+
+            setSession(prevSession => ({ name: "", authToken: res.accessToken, userId: res.userId }))
+            return res
+        }).then(() => {
+            router.push("/dashboard")
+        })
+        router.refresh()
     }
     return (
         <main className={background + color + "w-full h-[85vh] grid place-content-center"}>
-            <section>
-                <form onSubmit={handleSubmit} className="flex flex-col gap-3" action="">
-                    <input onChange={handleChange} className="text-black px-2 py-1 rounded-md" placeholder="Your email" required type="text" name="email" id="" />
-                    <input onChange={handleChange} className="text-black px-2 py-1 rounded-md" placeholder="Your password" required type="password" name="password" id="" />
-                    <button className="bg-blue-300 rounded-md py-1 mt-2" type="submit">Submit</button>
-                </form>
+            <section className={secondaryColor +  "p-10 rounded-lg"}>
+                <h1 className="text-center text-2xl mb-7 font-bold pb-2 border-b-4 border-blue-400">
+                    Please Log in
+                </h1>
+                <article>
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-3" action="">
+                        <input onChange={handleChange} className="text-black px-2 py-1 bg-slate-100 rounded-md" placeholder="Your email" required type="text" name="email" id="" />
+                        <input onChange={handleChange} className="text-black px-2 py-1 bg-slate-100 rounded-md" placeholder="Your password" required type="password" name="password" id="" />
+                        <button className="bg-blue-300 rounded-md py-1 mt-2" type="submit">Submit</button>
+                    </form>
+                </article>
             </section>
         </main>
     )
