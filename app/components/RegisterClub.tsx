@@ -13,6 +13,7 @@ type formData = {
 export default function RegisterClub() {
     const { theme, background, color, border, secondaryColor } = useTheme()
     const [data, setData] = useState<formData>({})
+    const [isNameInUse, setNameInUse] = useState(false)
     const {session} = useSession()
     const router = useRouter()
 
@@ -35,8 +36,14 @@ export default function RegisterClub() {
                 "Access-Control-Allow-Origin": "https://club.jactc.xyz"
             },
             body: body
-        }).then(res => res.json()).then(res => {
-            if(res.success) {
+        }).then(res => {
+            if(!res.ok) {
+                setNameInUse(true)
+                return "Bad req"
+            }
+            return res.json()
+        }).then(res => {
+            if(res !== "Bad req") {
                 router.push("/profile")
             }
         }).catch(err => console.log(err))
@@ -48,6 +55,9 @@ export default function RegisterClub() {
             <section className={secondaryColor + "p-6 rounded-lg flex flex-col justify-center align-middle"}>
                 <h1 className="text-2xl text-center pb-2 border-b-4 mx-auto border-blue-400 mb-5 max-w-[300px]">Register your Club</h1>
                 <article>
+                {isNameInUse && (
+                        <div className="mb-7 p-3 text-center bg-red-500 text-white rounded-lg"> <button onClick={() => setNameInUse(false)}>&#10006;</button> The name of the club is already in use</div>
+                    )}
                     <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-[30vw]" action="">
                         <input onChange={handleChange} required className="text-black p-2 rounded-md" placeholder="Introduce the name for your club" type="text" name="name" id="" />
                         <textarea onChange={handleChange} required className="text-black p-2 rounded-md" placeholder="Introduce the perfect description for your club" name="description" id="" cols={30} rows={10}></textarea>

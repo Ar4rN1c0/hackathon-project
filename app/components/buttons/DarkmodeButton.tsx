@@ -6,10 +6,10 @@ import { useRouter } from "next/navigation"
 
 
 export default function ThemeButton() {
-    const { theme, setTheme, background } = useTheme()
+    const { theme, setTheme, background, secondaryColor } = useTheme()
     const router = useRouter()
     return (
-        <div className={background + " select-none grid place-content-center"}>
+        <div className={secondaryColor + " select-none grid place-content-center"}>
             <button className="text-black" onClick={() => {
                 setTheme(theme === "dark" ? "light" : "dark")
             }}>

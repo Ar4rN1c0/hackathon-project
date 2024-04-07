@@ -13,6 +13,7 @@ type formData = {
 export default function RegisterPage() {
     const { background, color, secondaryColor, border } = useTheme()
     const [data, setData] = useState<formData>({})
+    const [isEmailInUse, setEmailInUse] = useState(false)
     const router = useRouter()
     function handleChange(e: ChangeEvent<HTMLInputElement>) {
         setData((prevData: formData) => ({
@@ -31,7 +32,17 @@ export default function RegisterPage() {
                 "Access-Control-Allow-Origin": "https://club.jactc.xyz/api/v1/auth/register"
             },
             body: body
-        }).then(res => res.json()).then(res => router.push("/auth/login")) as { message: string, success: boolean }
+        }).then(res => {
+            if(!res.ok) {
+                setEmailInUse(true)
+                return "Bad req"
+            }
+            return res.json()
+        }).then(res => {
+            if(res !== "Bad req") {
+                router.push("/auth/login")
+            }
+        }) as { message: string, success: boolean }
 
 
     }
@@ -42,6 +53,9 @@ export default function RegisterPage() {
                     Register
                 </h1>
                 <article>
+                {isEmailInUse && (
+                        <div className="mt-3 mb-0 p-3 text-center bg-red-500 text-white rounded-lg"> <button onClick={() => setEmailInUse(false)}>&#10006;</button>  Email already in use</div>
+                    )}
                     <form action="" onSubmit={handleSubmit} className={" flex flex-col gap-2 [&>input]:text-black [&>input]:bg-blue-200 [&>input]:rounded-md [&>input]:p-1 [&>input]:pl-3   p-10 rounded-md"}>
                         <label htmlFor="" id="name"></label>
                         <input required name="fullName" onChange={handleChange} className="focus:bg-slate-100 focus:border-2 focus:border-slate-200 box-content" placeholder="Your full Name" type="text" id="" />

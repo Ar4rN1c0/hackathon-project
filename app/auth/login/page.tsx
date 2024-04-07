@@ -14,6 +14,7 @@ type dataForm = {
 export default function LoginPage() {
     const { background, border, color, secondaryColor } = useTheme()
     const [data, setData] = useState<dataForm>({})
+    const [notValidData, setValidData] = useState(false)
     const { session, setSession } = useSession()
     const router = useRouter()
 
@@ -35,12 +36,22 @@ export default function LoginPage() {
                 "Access-Control-Allow-Origin": "https://club.jactc.xyz/"
             },
             body: body
-        }).then(res => res.json()).then(res => {
-
-            setSession(prevSession => ({ name: "", authToken: res.accessToken, userId: res.userId }))
+        }).then(res => {
+            if(!res.ok) {
+                return "Bad res"
+            }
+            return res.json()
+        }).then(res => {
+            if (!(res === "Bad res")) {
+                setSession(prevSession => ({ name: "", authToken: res.accessToken, userId: res.userId }))
+            }
             return res
-        }).then(() => {
-            router.push("/dashboard")
+        }).then((res) => {
+            if(!(res === "Bad res")) {
+                router.push("/dashboard")
+            } else {
+                setValidData(true)
+            }
         })
         router.refresh()
     }
@@ -51,6 +62,9 @@ export default function LoginPage() {
                     Please Log in
                 </h1>
                 <article>
+                    {notValidData && (
+                        <div className="mb-7 p-3 text-center bg-red-500 text-white rounded-lg"> <button onClick={() => setValidData(false)}>&#10006;</button> Not valid email or password</div>
+                    )}
                     <form onSubmit={handleSubmit} className="flex flex-col gap-3" action="">
                         <input onChange={handleChange} className="text-black px-2 py-1 bg-slate-100 rounded-md" placeholder="Your email" required type="text" name="email" id="" />
                         <input onChange={handleChange} className="text-black px-2 py-1 bg-slate-100 rounded-md" placeholder="Your password" required type="password" name="password" id="" />

@@ -52,6 +52,7 @@ export default function SessionProvider({ children }: Readonly<{ children: React
         }
     }, [])
     function useChangeSession(newSession: SetStateAction<Session>) {
+        getName(session.userId, session.authToken, setSession)
         setSession(newSession)
     }
     useEffect(() => {

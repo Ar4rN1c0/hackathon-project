@@ -3,17 +3,11 @@ import Link from "next/link"
 
 const personalMenuItems = [
     {content: "Find Activites", href: "/dashboard"},
-    {content: "Set Area", href: "/set_area"},
     {content: "Create a club", href: "/auth/register/club"},
-    {content: "Your clubs", href: "/profile/clubs"},
+    {content: "Your clubs", href: "/profile"},
     {content: "Settings", href: "/settings"}
 ]
-const clubMenuItems = [
-    {content: "Find users", href: "/search/users"},
-    {content: "Add event", href: "/create_event"},
-    {content: "Your events", href: "/profile/events"},
-    {content: "Settings", href: "/settings"}
-]
+
 
 export default function Menu () {
     const {background, border} = useTheme()

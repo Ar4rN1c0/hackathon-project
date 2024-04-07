@@ -9,9 +9,9 @@ import Link from "next/link";
 
 
 export default function Header() {
-    const { background, theme } = useTheme()
+    const { background, theme, secondaryColor } = useTheme()
     return (
-        <header className={background + " border-2 flex justify-between p-4 sticky"}>
+        <header className={secondaryColor + " flex justify-between p-4 sticky"}>
             <h1><Link href="/">Title</Link></h1>
             <menu className="flex justify-between align-middle gap-5">
                 <SearchBar></SearchBar>
