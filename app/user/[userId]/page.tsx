@@ -4,8 +4,8 @@ import { redirect } from "next/navigation"
 
 export default async function UserPage({ params }: { params: { userId: string } }) {
     const reqcookies = cookies()
-    if (reqcookies.get("session")) {
-        const session = JSON.parse(reqcookies.get("session").value as string)
+    if (reqcookies.get("session") !== undefined) {
+        const session = JSON.parse(reqcookies.get("session")?.value as string)
         if(session.userId === params.userId) {
             redirect("/profile")
         }
