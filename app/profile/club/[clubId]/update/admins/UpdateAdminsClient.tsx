@@ -22,6 +22,15 @@ export default function UpdateAdminsClient ({adminsInfo, clubId}: {adminsInfo: a
     }
     async function handleUpdate(e: FormEvent<HTMLFormElement>) {
         e.preventDefault()
+        async function getInfo() {
+            const res = await fetch("https://club.jactc.xyz/api/v1/user/profile/" + inputAdmin, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            } ).then(res => res.json()).then(res => {console.log(res); return res}).catch(err => console.error(err))
+            return res
+        }
         const newAdmin = await fetch("https://club.jactc.xyz/api/v1/club/club/update/addAdmins", {
             method: "PATCH",
             headers: {
@@ -43,15 +52,6 @@ export default function UpdateAdminsClient ({adminsInfo, clubId}: {adminsInfo: a
                 setBadData(true)
             } else {
                 console.log(res)
-                async function getInfo() {
-                    const res = await fetch("https://club.jactc.xyz/api/v1/user/profile/" + inputAdmin, {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json"
-                        }
-                    } ).then(res => res.json()).then(res => {console.log(res); return res}).catch(err => console.error(err))
-                    return res
-                }
                 setAdmins(prev => [...prev, getInfo()])
                 //e.target.reset()
             }
